@@ -98,7 +98,7 @@ rep_song = function(num, vessel, liquid, surface){
 #}
 #Approximation 2 -- Ramanujan
 ellipse_perimeter = function(a, b=a) {
-  inside_func = 3(a+b)- sqrt((3*a+b)(a+3*b))
+  inside_func = 3*(a+b) - sqrt((3*a+b)*(a+3*b))
   
   return( pi*inside_func)
 }
