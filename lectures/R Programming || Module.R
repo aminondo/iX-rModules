@@ -154,7 +154,10 @@ rect_area = function(w,h = w) {
   return(w*h)
 }
 # Q. Write a function to calculate Body Mass Index (BMI).
-
+BMI = function(w_kg, h_m) {
+  if(w_kg<0 || h_m<0) stop("Error: Arguments need to be positive", call = F)
+  return(w_kg/h_m^2)
+}
 # Q. Write a function to calculate factorials.
 factorial = function(n) {
   if(n<0) stop("Error: Arguments need to be positive", call=F)
