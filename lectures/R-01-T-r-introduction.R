@@ -65,8 +65,7 @@ devtools::install_github("hadley/ggplot2")
 
 # Q. Install the roxygen package from GitHub.
 
-install.packages("MASS")
-
+devtools::install_github("klutometis/roxygen")
 # Variables -----------------------------------------------------------------------------------------------------------
 
 # Assignment operator.
@@ -100,6 +99,7 @@ birth_date = "23/06/1994"
 
 
 # Q. Use ls() to list these variables.
+ls()
 # Q. Create a variable p with value 7. Delete p.
 #variable names: instrinsic meaning
 (p = 7)
@@ -197,7 +197,8 @@ unclass(today.lt)
 # Q. Format today's date like "13 April 2017".
 strftime(today, "%d %B %Y")
 # Q. Parse "13/04/17 14h35" and convert to POSIXct.
-
+time = strptime("13/04/17 14h35", "%d/%m/%y %Hh%M")
+time = as.data.frame.POSIXct(time)
 # Q. Calculate your age in days.
 birth_date = "23/06/1994"
 birth_date = strptime(birth_date, "%d/%m/%Y")
@@ -419,6 +420,7 @@ names(rversion)
 rversion$nickname
 
 # Q. Package up all of your personal information in a list.
+my_info = list(first_name=first_name,surname=surname,height=height_cm, gender=gender, date=birth_date)
 
 # Type: Data Frames ---------------------------------------------------------------------------------------------------
 
@@ -489,8 +491,14 @@ merge(folk, gen, by.x = 'index', by.y = 'id' )
 # && || for single elements vs | & for vectors
 
 # Q. Create a data frame with the names and birth dates of The Beatles.
+beatles = data.frame(id = 1:6,
+                     names = c("John Lennon","Paul McCartney","George Harrison","Ringo Star", "Pete Best", "Stuart Sutcliffe"), 
+                     birth_dates = c(as.Date("10/9/1940"),as.Date("06/18/1942"),as.Date("02/25/1943"), as.Date("07/07/1940"), as.Date("11/24/1941"), as.Date("06/23/1940")))
+dead = data.frame(id=1:6,
+                  dead = c(T,F,T,F,F,T))
+beatles = merge(beatles,dead)
 # Q. Who's the oldest and youngest in The Beatles (ignoring the fact John Lennon is deceased!)?
-
+beatles[beatles$dead=="FALSE" & order(beatles$birth_dates),]
 # =====================================================================================================================
 # INTRODUCTION TO R SOLUTIONS
 # =====================================================================================================================
