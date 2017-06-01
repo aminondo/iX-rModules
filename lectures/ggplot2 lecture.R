@@ -122,8 +122,8 @@ ggplot(data=movies2, aes(x=audience_score, y=critics_score, color=mpaa_rating))
 movies2$thtr_rel_date_str = sprintf("%04d-%02d-%02d", movies2$thtr_rel_year,movies2$thtr_rel_month,movies2$dvd_rel_day)
 movies2$dvd_rel_date_str = sprintf("%04d-%02d-%02d", movies2$dvd_rel_year,movies2$dvd_rel_month,movies2$dvd_rel_day)
 
-movies2$thtr_rel_date <- as.Date(movies$thtr_rel_date_str)
-movies2$dvd_rel_date <- as.Date(movies$dvd_rel_date_str)
+movies2$thtr_rel_date <- as.Date(movies2$thtr_rel_date_str)
+movies2$dvd_rel_date <- as.Date(movies2$dvd_rel_date_str)
 
 movies2$dvd_rel_delay <- movies2$dvd_rel_date - movies2$thtr_rel_date
 
