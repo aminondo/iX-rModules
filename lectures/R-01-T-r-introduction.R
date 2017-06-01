@@ -498,7 +498,8 @@ dead = data.frame(id=1:6,
                   dead = c(T,F,T,F,F,T))
 beatles = merge(beatles,dead)
 # Q. Who's the oldest and youngest in The Beatles (ignoring the fact John Lennon is deceased!)?
-beatles[beatles$dead=="FALSE" & order(beatles$birth_dates),]
+head(beatles[beatles$dead=="FALSE" & order(beatles$birth_dates),],1) #oldest
+tail(beatles[beatles$dead=="FALSE" & order(beatles$birth_dates),],1) #youngest
 # =====================================================================================================================
 # INTRODUCTION TO R SOLUTIONS
 # =====================================================================================================================
