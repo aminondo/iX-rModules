@@ -18,6 +18,7 @@ x=x/(x+1)
 x=x^2
 sum(x)
 
+1:10 %>% (function(x) x / (x + 1)) %>% (function(x) x^2) %>% sum()
 
 set.seed(13)
 
@@ -36,10 +37,14 @@ mtcars %>% (function(df) {rbind(head(df), tail(df))})
 # Q. Perform the following operation:
 #
 #     - generate 100 uniformly distributed random numbers;
+x = runif(100)
 #     - subtract 1 from each of them;
+x = x-1
 #     - calculate the range; and
+range(x)
 #     - find the sum of the largest and smallest numbers.
-
+max(x)+min(x)
+runif(100) %>% function(x) {x-1} %>% range %>% max+min
 # =====================================================================================================================
 # PIPING IN R SOLUTIONS
 # =====================================================================================================================
