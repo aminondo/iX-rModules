@@ -109,5 +109,17 @@ ggplot(data = movies, aes(x = genre)) +
 ggplot(data = movies, aes(x = genre)) +
   geom_bar() + theme(axis.text.x=element_text(angle = 45, hjust = 1))
 
+ggplot(data = movies, aes(x = genre)) +
+  geom_bar() + theme_minimal() + theme(axis.text.x=element_text(angle = 45, hjust = 1)) 
 
 ## More to come...
+#make a graph that compares audience_rating vs critic_rating divided by MPAA
+ggplot(data=movies2, aes(x=audience_score, y=critics_score, color=mpaa_rating)) 
+      + geom_point() + facet_wrap( ~mpaa_rating)
+
+# difference between movie and dvd release
+
+movies2$thtr_rel_date_str = sprintf("%04d-%02d-%02d", movies2$thtr_rel_year,movies2$thtr_rel_month,movies2$dvd_rel_day)
+movies2$dvd_rel_date_str = sprintf("%04d-%02d-%02d", movies2$dvd_rel_year,movies2$dvd_rel_month,movies2$dvd_rel_day)
+
+
