@@ -4,20 +4,25 @@
 
 # import data
 library(readr)
-movies <- read_csv("~/Desktop/movies.csv")
+movies <- read.csv("../Week 1/movies.csv")
+movies2 = movies[movies$audience_rating!="",] #removed empty rating
 View(movies)
 
 #install package
-install.packages("ggplot2") 
+#install.packages("ggplot2") 
 
 #load package
 library(ggplot2) 
 
 
 # INITIAL VISUALIZATION
+#aes stands for aesthetic
+#geom_point editing geometric objects
+
 ggplot(data = movies, aes(x = audience_score, y = critics_score)) + geom_point()
 
 # ALTERING FEATURES
+#alpha = opacity
 ggplot(data = movies, aes(x = audience_score, y = critics_score)) +
   geom_point(alpha = 0.5, color = "blue")
 
@@ -27,7 +32,13 @@ ggplot(data = movies, aes(x = audience_score, y = critics_score, color = genre))
   geom_point(alpha = 0.5) +
   facet_grid(. ~ title_type)
 
-# How did the plot change? 
+# How did the plot change?
+#make it horizontal
+# ~ 'as a function of' 
+# . stands for everything
+ggplot(data = movies, aes(x = audience_score, y = critics_score, color = genre)) +
+  geom_point(alpha = 0.5) +
+  facet_grid(. ~ title_type ~ .)
 
 # MORE FACETING
 ggplot(data = movies, aes(x = audience_score, y = critics_score, color = genre)) +
@@ -59,17 +70,17 @@ ggplot(data = movies, aes(x = audience_score, y = critics_score, color = title_t
 
 
 # HISTOGRAMS
-ggplot(data = movies, aes(x = audience_score)) +
-  geom_histogram(binwidth = 5)
+ggplot(data = movies2, aes(x = audience_score, color='red', fill=genre)) +
+  geom_histogram(binwidth = 5) + facet_grid(( . ~ audience_rating))
 
 
 # DENSITY PLOT
-ggplot(data = movies, aes(x = runtime, color = audience_rating)) +
+ggplot(data = movies2, aes(x = runtime, color = audience_rating)) +
   geom_density() 
 
 # create a limit for y-axis and x-axis...     
-ggplot(data = movies, aes(x = runtime, fill = audience_rating)) +
-  geom_density() + ylim(0, .04) + xlim(0, 200)
+ggplot(data = movies2, aes(x = runtime, fill = audience_rating)) +
+  geom_density(alpha=.5) + ylim(0, .04) + xlim(0, 200)
 
 
 # MORE SCATTER PLOTS
@@ -82,6 +93,9 @@ ggplot(data = movies, aes(x = imdb_rating, y = audience_score)) +
   geom_point(alpha = 0.5) +
   geom_smooth()
 
+ggplot(data = movies, aes(x = imdb_rating, y = audience_score)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth(method="lm", show.legend = T)
 
 # BAR PLOTS
 ggplot(data = movies, aes(x = genre)) +
