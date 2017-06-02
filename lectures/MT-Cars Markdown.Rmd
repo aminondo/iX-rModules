@@ -1,0 +1,38 @@
+---
+title: "MTCARS Simple Analysis"
+author: "Antonio Minondo"
+date: "6/2/2017"
+output: 
+  html_document:
+    css: styles.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+```
+## MtCars Summary
+``` {r summary, echo=TRUE}
+summary(mtcars)
+```
+## Power vs Weight
+``` {r weight, echo=FALSE}
+ggplot(mtcars, aes(x=wt, y=hp)) + geom_point(alpha=.5) + geom_smooth(method="lm") + labs(x='weight in 1000lbs', y='horsepower', title="Horsepower vs Weight")
+```
+
+This plot demonstrates that as the weight of the car increases, the horsepower must also increase. Interestingly enough the variance is lower around 3,500 lbs, vs a greater variance in low weight and high weight cars. I hypothesize that this is because there is less variance in horsepower among commercial cars of that weight while lower weight cars contain 
+
+##Automatic vs Manual Transmission
+``` {r am, echo=FALSE}
+mtcars$am =factor(mtcars$am, labels=c("Automatic", "Manual"))
+ggplot(mtcars, aes(x=hp, y=qsec, color=am)) + geom_point(alpha=.5) + labs(title='1/4 mile time vs horsepower', x='horsepower', y='1/4 mile time (s)')
+```
+
+This plot demonstrates that manual transmission still has an edge over autmoatic transmission when it comes to the 1/4 mile time. It appears that for the same horsepower manual transmission does a faster 1/4 mile time  
+
+##Miles per Galon vs Horsepower
+```{r mpg, echo=FALSE}
+ggplot(mtcars, aes(x=mpg, y=hp)) + geom_point(alpha=.5) + labs(title="MPG vs Horsepower", x='Mileage', y='Horsepower')
+```
+
+This plot shows that cars with greater horsepower tend to have lower mileage than cars with lower horsepower.
