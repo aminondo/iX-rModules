@@ -1,0 +1,94 @@
+---
+title: "Example Markdown Document"
+author: "Andrew Collier"
+date: "06 July 2016"
+output: html_document
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Text and Images
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam tempus leo non dolor pretium, at consectetur nibh consequat. Vivamus eu ex libero. Pellentesque id ullamcorper eros. Nam ligula lacus, condimentum a odio ut, ornare vestibulum nunc. Pellentesque in lorem sapien. Nam rutrum non elit sit amet fermentum. Nunc velit ante, sollicitudin vel quam at, congue interdum augue. Curabitur fermentum magna nulla. Aliquam eget nibh nec est accumsan ultricies ac at odio.
+
+![The R logo.](https://www.r-project.org/logo/Rlogo.png)
+
+# Code Chunks
+
+Ut id laoreet nisi. In eget urna dui. Mauris gravida libero ac felis feugiat, faucibus sodales arcu volutpat. Pellentesque euismod imperdiet risus eget maximus. Nunc consequat eu turpis in convallis. In enim enim, molestie non diam in, dictum ultrices justo. Aenean facilisis elit quis tellus tempor, quis facilisis odio gravida. Aenean sed dictum lacus. Praesent ipsum ex, pellentesque ac sagittis at, sollicitudin eget risus. Sed vehicula massa posuere dui auctor, vitae bibendum libero feugiat. Quisque fermentum enim eget sapien rhoncus, in volutpat mi suscipit. Nam sagittis condimentum sem, vitae viverra ex semper id. Morbi vel nulla justo.
+
+## Simple Code
+
+Nunc imperdiet neque sollicitudin nisi dignissim hendrerit. Aliquam sollicitudin erat orci, eget tincidunt nisl pretium nec. Fusce mollis fermentum nibh, ut sodales purus bibendum non. Nunc fermentum venenatis pharetra. In volutpat mauris eget nisi tristique ultricies.
+
+```{r}
+(x = seq(-5, 5, 0.1))
+```
+
+Quisque nec enim quis libero efficitur volutpat. Ut at dui condimentum, viverra metus ut, tincidunt ligula. Curabitur sollicitudin lectus et lacus pulvinar dapibus. Nulla posuere sem at pellentesque iaculis. Phasellus sit amet orci quis lacus volutpat dictum ac aliquam ante. Integer varius viverra dui in laoreet. Sed congue lorem magna, faucibus pulvinar sem interdum et. Integer aliquam id nisl imperdiet congue.
+
+## Code with Plot
+
+Nulla at tempus odio, id malesuada orci. Maecenas vitae porttitor felis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Maecenas imperdiet erat urna, a imperdiet ligula viverra ut. Aenean rhoncus malesuada erat non dignissim.
+
+```{r}
+plot(x, dnorm(x), type = "l")
+```
+
+In auctor sagittis turpis, a molestie risus faucibus ultricies. Sed rutrum faucibus gravida. Aliquam diam urna, consectetur et lobortis in, facilisis at diam. Duis dapibus libero dui, sed varius dolor tincidunt ut. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Donec consectetur facilisis nibh sed laoreet.
+
+# Tables
+
+Ut at urna suscipit, semper lacus ut, interdum est. Phasellus aliquam vehicula egestas. Integer ac justo et orci venenatis hendrerit in at justo. Phasellus in orci nisi. Vivamus eget elementum neque, eget posuere neque. Mauris a fermentum urna. Sed vestibulum eros et justo efficitur venenatis. Donec libero nibh, volutpat ac consequat tristique, mattis ut dolor. Vivamus quis ligula felis.
+
+```{r results = "asis", echo = FALSE}
+knitr::kable(head(iris), caption = "Iris Data")
+```
+
+# Maths
+
+Vestibulum pulvinar ante in dui semper, ac rutrum ex rutrum. Integer faucibus lorem eu lacus finibus ullamcorper. Curabitur dapibus ullamcorper velit id dignissim. Morbi eget nulla ut sem dignissim sodales in eleifend dui.
+
+You can include sophisticated mathematics using LaTeX syntax.
+
+$$
+\begin{align*}
+  \nabla \times \vec{\mathbf{B}} -\, \frac1c\, \frac{\partial\vec{\mathbf{E}}}{\partial t} & = \frac{4\pi}{c}\vec{\mathbf{j}} \\
+  \nabla \cdot \vec{\mathbf{E}} & = 4 \pi \rho \\
+  \nabla \times \vec{\mathbf{E}}\, +\, \frac1c\, \frac{\partial\vec{\mathbf{B}}}{\partial t} & = \vec{\mathbf{0}} \\
+  \nabla \cdot \vec{\mathbf{B}} & = 0
+\end{align*}
+$$
+
+Nunc ac vehicula dolor. Proin dictum vestibulum varius. Nullam viverra lacus sed quam finibus vulputate vel at elit. Cras dictum sagittis felis, nec suscipit mauris sagittis quis.
+
+# Interactivity
+
+Nullam fringilla dictum lacus et feugiat. Sed malesuada hendrerit scelerisque. Aliquam ullamcorper dolor diam, in congue diam rhoncus eget. Integer vitae purus quis velit congue malesuada. Ut commodo orci dui, non aliquet dolor condimentum at.
+
+You can embed Shiny components in your document to produce interactivity.
+
+```{r eruptions, echo=FALSE}
+inputPanel(
+  selectInput("breaks", label = "Number of bins:",
+              choices = c(10, 20, 35, 50), selected = 20),
+  
+  sliderInput("bw_adjust", label = "Smooth bandwidth adjustment:",
+              min = 0.2, max = 2, value = 1, step = 0.2)
+)
+
+renderPlot({
+  hist(iris$Petal.Length, probability = TRUE, breaks = as.numeric(input$breaks),
+       xlab = "Petal Length [cm]", main = "Distribution of Iris Petal Length")
+  
+  dens <- density(iris$Petal.Length, adjust = input$bw_adjust)
+  lines(dens, col = "blue")
+})
+```
+
+You can also embed a separate Shiny application using `shinyAppDir()`.
+
+In purus nibh, efficitur a lorem at, lobortis facilisis turpis. Ut est lorem, euismod id lobortis ut, porta at ligula. Vestibulum in vestibulum eros, in maximus felis. Vestibulum sollicitudin turpis eget mauris porta, ac vulputate est imperdiet. Sed porta condimentum porta.
