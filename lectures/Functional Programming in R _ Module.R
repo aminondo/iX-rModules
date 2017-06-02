@@ -26,6 +26,7 @@ sapply(c(1, 4, 9, 16), sqrt)
 lapply(list(first = 1:10, second = runif(5), third = rnorm(20)), function(x) {range(x)})
 
 # Q. Repeat the last operation but using sapply().
+sapply(list(first = 1:10, second = runif(5), third = rnorm(20)), function(x) {range(x)})
 
 # -> tapply()
 
