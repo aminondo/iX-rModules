@@ -94,11 +94,13 @@ SELECT * FROM tb_Person WHERE Gender = 'F' AND Birth IS NULL;   -- All Female wi
 SELECT * FROM tb_Person WHERE Birth >= '2002-06-01';            -- All with Birth after 1 June 2002
 
 -- Q. Select all males whose Height is not NULL.
+select * from tb_Person where Gender = "M" and Height is not null;
 -- Q. Select all people whose names begin with 'A'.
+select * from tb_Person where Name like "A%";
 
 -- Ordering.
 --
-SELECT Name, Birth FROM tb_Person ORDER BY Birth DESC;
+SELECT Name, Birth FROM tb_Person ORDER BY Birth DESC, Name;
 
 -- Aggregation (https://www.sqlite.org/lang_aggfunc.html)
 --
@@ -108,10 +110,13 @@ SELECT Gender, AVG(Height) AS AvgHeight, MIN(Height) AS MinHeight, MAX(Height) A
 --
 -- A WHERE clause cannot be applied to the results of aggregation.
 --
+
 SELECT Gender, COUNT(*) AS Population
     FROM tb_Person
+    where Gender="M"
     GROUP BY Gender
     HAVING Population > 4;
+    
 
 -- ==========================================================================================================
 -- ALTER TABLE
@@ -137,7 +142,9 @@ UPDATE tb_Person SET JobId = 4 WHERE Name IN ('Andrea', 'Maria');
 UPDATE tb_Person SET JobId = 2 WHERE PersonId = 4;
 
 -- Q. Update the table so that the rest of the people are Data Scientists.
-
+update tb_Person set JobId = (select JobId from tb_Profession where Description="Data Scientist")
+  where JobId = 0;
+  
 -- ==========================================================================================================
 -- DELETING DATA
 -- ==========================================================================================================
@@ -146,8 +153,9 @@ UPDATE tb_Person SET JobId = 2 WHERE PersonId = 4;
 --
 DELETE FROM tb_Person WHERE Name = 'Frankie';
 
-DELETE FROM tb_Profession WHERE JobId = 1;                      -- This won't work! Why?
-
+DELETE FROM tb_Profession WHERE JobId = 1;         
+-- This won't work! Why?
+-- other tables reference that jobid so it cannot be deleted
 -- ==========================================================================================================
 -- SUB-QUERIES AND COMPOUND QUERIES
 -- ==========================================================================================================
@@ -171,7 +179,7 @@ ON
           P.JobId = Q.JobId;
 
 -- OUTER JOIN
---
+-- https://stackoverflow.com/questions/38549/what-is-the-difference-between-inner-join-and-outer-join
 SELECT Description, Name FROM tb_Profession P LEFT OUTER JOIN tb_Person Q ON P.JobId = Q.JobId;
 
 -- JOIN and Sub-Query
