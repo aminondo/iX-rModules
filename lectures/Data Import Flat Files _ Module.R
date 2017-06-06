@@ -27,6 +27,12 @@ names <- read.csv("names.csv")
 head(names)
 
 # Q. Check column classes and fix.
+class(names$name)
+nrows(names)
+length(unique(names$name))
+#no reason to have names$name as a factor variable, factors used to define categorical set
+names$name = as.character(names$name)
+
 
 # CSV (better route) --------------------------------------------------------------------------------------------------
 
@@ -35,8 +41,15 @@ library(readr)
 names <- read_csv("names.csv")
 
 # Q. Check column classes and fix.
+#     no need
 # Q. Fix name for first column. Possibly delete this column?
+names$id = names$X1
+names$X1 = NULL # names = names[,-1]
+#colnames(names)[1] = "id"
+names = names[, c("id", "name", "total", "male_share", "female_share", "gap")]
 # Q. Write these data to a pipe-delimited file.
+write.table(names, file="names-delim.csv", sep="|", quote=F, row.names=F)
+write_delim(names, "names-delim2.csv", delim="|")
 
 # XLS -----------------------------------------------------------------------------------------------------------------
 
@@ -47,5 +60,7 @@ download.file("http://www.sample-videos.com/xls/Sample-Spreadsheet-1000-rows.xls
 library(readxl)
 
 sales <- read_excel("sample-data.xls")
+
+#best way to do this is actually turn it into csv and then import it
 
 # Q. Fix the column names.
