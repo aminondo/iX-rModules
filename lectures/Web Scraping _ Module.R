@@ -2,7 +2,6 @@ library(rvest)
 library(dplyr)
 library(reshape2)
 library(ggplot2)
-
 # ---------------------------------------------------------------------------------------------------------------------
 # WORLD UNIVERSITY RANKINGS
 # ---------------------------------------------------------------------------------------------------------------------
@@ -10,9 +9,14 @@ library(ggplot2)
 # We'll start by scraping World University Rankings from http://cwur.org/2015/.
 
 rankings <- read_html("http://cwur.org/2015.php") %>% html_nodes("table") %>% .[[1]] %>% html_table(trim = TRUE)
-#
+rankings <- read_html("http://cwur.org/2015.php") %>% html_node("table") %>% html_table(trim = TRUE)
+rankings <- read_html("http://cwur.org/2015.php") %>% html_node("body > div > div.row > div > div > table") %>% html_table(trim = TRUE)
+
+#body > div > div.row > div > div > table
 # Q. Use the browser to get a more specific CSS selector for this table.
+#right click element > copy > select css selector
 # Q. Is the .[[1]] necessary?
+#no you can use html_node instead
 
 # Clean up the column names.
 
@@ -22,9 +26,10 @@ library(stringr)
 
 names(rankings) <- str_replace_all(names(rankings), "[/[:space:]]", "")
 
-# Use filter() to find the ranking of your university.
 
-filter(rankings, grepl("Royal", Institution), Location == "Sweden")
+# Use filter() to find the ranking of your university.
+rankings[rankings$Institution=="University of Notre Dame",]$WorldRank
+filter(rankings, grepl("University of Notre Dame", Institution))
 
 # ---------------------------------------------------------------------------------------------------------------------
 # POPULAR R JOBS
@@ -36,9 +41,10 @@ rusers <- read_html("http://www.r-users.com/")
 
 # METHOD 1
 
-# Grab the <li> nodes.
+# Grab the <li> nodes. #top_listings-2 > div.widget_content > ul
 #
 rusers.li <- html_nodes(rusers, xpath = '//*[@id="top_listings-2"]/div[2]/ul/li')
+rusers.li <- html_nodes(rusers, '#top_listings-2 > div.widget_content > ul > li')
 
 # Grab the child nodes (could have done this directly with more specific XPath above).
 #
@@ -51,6 +57,9 @@ rusers.a <- html_nodes(rusers, xpath = '//*[@id="top_listings-2"]/div[2]/ul/li/a
 html_attr(rusers.a, name = "href")
 html_text(rusers.a)
 
+
+#create data frame
+job_data = data.frame(job = html_text(rusers.a), desc = html_attr(rusers.a, name = "href"))
 # =====================================================================================================================
 # SCRAPING EXERCISES
 # =====================================================================================================================
