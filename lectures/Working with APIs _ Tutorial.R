@@ -58,8 +58,8 @@ twitter.text = sapply(tweets, function(x) x$getText())
 
 # Convert to data frame
 #
-do.call(rbind, lapply(tweets, function(x) x$toDataFrame()))
-
+tweets_df = do.call(rbind, lapply(tweets, function(x) x$toDataFrame()))
+View(tweets_df)
 # Remove unprintable characters
 #
 twitter.text= gsub("[^[:print:]]", "", twitter.text)
@@ -71,7 +71,7 @@ twitter.text = gsub("http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9
 # Remove truncated text
 #
 twitter.text = gsub("[^[:space:]]*…$", "", twitter.text)
-
+#a corpus does all the words that are used in all the tweets and consolidates them to make a lannguage
 twitter.corpus = Corpus(VectorSource(twitter.text))
 
 # If any of the below commands break with an error that mentions "mclapply" then try adding either
