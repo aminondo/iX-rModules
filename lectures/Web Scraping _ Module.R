@@ -104,6 +104,37 @@ job_data = data.frame(job = html_text(rusers.a), desc = html_attr(rusers.a, name
 # Scrape data for every day of the year and use this to check whether there is evidence to suggest that these dates
 # are not uniformly distributed across the year.
 
+
+days = c(31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
+year = lapply(1:12, function(m){
+          lapply(1:days[m], function(d){
+            if(d%%5==0) {Sys.sleep(5)}
+            url = sprintf("http://www.baseball-reference.com/friv/birthdays.cgi?month=%d&day=%d",m,d)
+            tb1 = read_html(url) %>% html_node("table") %>% html_table(trim=T) %>% plyr::mutate(month = m, day = d)
+            #print(sprintf('month:%d day:%d',m,d))
+            })
+      })
+#right now data is a list of months, that each contain a list of days, that each contain a dataframe
+temp = unlist(year, recursive=F) #this will give me a list of days
+temp = do.call(rbind, temp) #this will merge each day's dataframe
+write.csv(temp,file="baseball.csv")
+
+temp$month = factor(temp$month, labels=month.abb)
+
+ggplot(temp, aes(x = month)) + geom_bar(fill = "#000000", col = "#4DA664") +
+  labs(x = "", y = "Count", title = "Major League Baseball Birthdays") +
+  theme_classic()
+
+
+
+jan = lapply(1:31, function(d){
+  if(d==15) {Sys.sleep(10)}
+  url = sprintf("http://www.baseball-reference.com/friv/birthdays.cgi?month=01&day=%d",d)
+  tb1 = read_html(url) %>% html_node("table") %>% html_table(trim=T) %>% plyr::mutate(month = 1, day = d)
+})
+jan = do.call(rbind,jan)
+
+
 # =====================================================================================================================
 # SCRAPING SOLUTIONS
 # =====================================================================================================================
@@ -157,7 +188,7 @@ baseball = mutate(baseball,
                   month = factor(month, labels = month.abb)
                   )
 
-ggplot(baseball, aes(x = month)) +
+ggplot(temp, aes(x = month)) +
   geom_bar(fill = "#A8DDB5", col = "#4DA664") +
   labs(x = "", y = "Count", title = "Major League Baseball Birthdays") +
   theme_classic()
