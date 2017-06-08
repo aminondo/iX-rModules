@@ -103,7 +103,7 @@ text_df = data.frame( text = str_split(text, "\n")[[1]])
 book_tidy %>% count(word, sort = TRUE)
 
 # A collection of stop words.
-#
+# 
 stop_words
 
 # Now let's remove them from our data.
@@ -151,6 +151,7 @@ sentiment <- book_tidy %>% inner_join(get_sentiments("bing")) %>%
   transmute(sentiment = positive - negative)
 #
 sentiment
+
 #
 # Would be easier to make sense of that with a visualisation.
 #
@@ -212,10 +213,29 @@ books <- books %>% group_by(title) %>% mutate(line = row_number()) %>% ungroup()
 # REMOVE STOP WORDS ---------------------------------------------------------------------------------------------------
 
 # Q. Remove the stop words from each of the books.
+books_tidy <- books_tidy %>% anti_join(stop_words)
 
 # SENTIMENT ANALYSIS --------------------------------------------------------------------------------------------------
 
 # Q. Generate a multi-panel plot which shows the evolution of sentiment thoughout each of the books.
+sentiment <- books_tidy %>% inner_join(get_sentiments("bing")) %>%
+  count(title,author,index = line %/% 100, sentiment) %>%
+  spread(sentiment, n, fill = 0) %>%
+  transmute(sentiment = positive - negative)
+#
+View(sentiment)
+
+
+#
+# Would be easier to make sense of that with a visualisation.
+#
+dubliners = sentiment[sentiment$title=="Dubliners",]
+
+ggplot(sentiment, aes(x = index, y = sentiment, color=title)) +
+  geom_bar(stat = "identity") + facet_wrap(~title)
+
+
+
 
 # TERM FREQUENCY / INVERSE DOCUMENT FREQUENCY -------------------------------------------------------------------------
 
@@ -226,7 +246,9 @@ books <- books %>% group_by(title) %>% mutate(line = row_number()) %>% ungroup()
 # Term Frequency
 #
 books_words <- books_tidy %>% count(title, word, sort = TRUE)
-#
+books_words
+
+
 books_words_totals <- books_words %>% group_by(title) %>% summarise(total = sum(n)) %>% ungroup()
 #
 books_words <- left_join(books_words, books_words_totals)
@@ -236,6 +258,25 @@ books_words <- left_join(books_words, books_words_totals)
 books_words <- books_words %>% bind_tf_idf(word, title, n)
 
 # Q. Create a multi-panel plot showing histograms of term frequency for each book.
+
+#books_words %>% arrange(desc(tf_idf))
+books_words %>%
+  group_by(title) %>%
+  top_n(25,tf_idf) %>%
+  ungroup() %>%
+  mutate(word = reorder(word, tf_idf)) %>%
+  ggplot(aes(word, tf_idf,fill = title)) +
+  geom_bar(stat = "identity") +  
+  facet_wrap(~ title, scales = "free") + theme(axis.text.x = element_blank(),
+                                              strip.text.y = element_blank(),
+                                              strip.background = element_blank())
+ 
+
+
+books_words[books_words$n>5,] %>% 
+  ggplot(aes(x=reorder(word, -n),y=n)) +
+  geom_bar(stat="identity", fill="darkred", colour="darkgreen") + facet_wrap(~title)+
+  theme(axis.text.x=element_text(angle=45, hjust=1))
 
 # General observations:
 #
