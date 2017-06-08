@@ -121,7 +121,7 @@ write.csv(temp,file="baseball.csv")
 
 temp$month = factor(temp$month, labels=month.abb)
 
-ggplot(temp, aes(x = month)) + geom_bar(fill = "#000000", col = "#4DA664") +
+ggplot(temp, aes(x = month)) + geom_bar() +
   labs(x = "", y = "Count", title = "Major League Baseball Birthdays") +
   theme_classic()
 
