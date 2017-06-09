@@ -260,16 +260,7 @@ books_words <- books_words %>% bind_tf_idf(word, title, n)
 # Q. Create a multi-panel plot showing histograms of term frequency for each book.
 
 #books_words %>% arrange(desc(tf_idf))
-books_words %>%
-  group_by(title) %>%
-  top_n(25,tf_idf) %>%
-  ungroup() %>%
-  mutate(word = reorder(word, tf_idf)) %>%
-  ggplot(aes(word, tf_idf,fill = title)) +
-  geom_bar(stat = "identity") +  
-  facet_wrap(~ title, scales = "free") + theme(axis.text.x = element_blank(),
-                                              strip.text.y = element_blank(),
-                                              strip.background = element_blank())
+
  
 
 
@@ -290,4 +281,13 @@ books_words[books_words$n>5,] %>%
 books_words %>% arrange(desc(tf_idf))
 
 # Q. Create a multi-panel plot showing bars plts of words with largest TFIDF for each book.
-
+books_words %>%
+  group_by(title) %>%
+  top_n(20,tf_idf) %>%
+  ungroup() %>%
+  mutate(word = reorder(word, tf_idf)) %>%
+  ggplot(aes(word, tf_idf,fill = title)) +
+  geom_bar(stat = "identity") +  
+  facet_wrap(~ title, scales = "free") + theme(axis.text.x = element_blank(),
+                                               strip.text.y = element_blank(),
+                                               strip.background = element_blank())
