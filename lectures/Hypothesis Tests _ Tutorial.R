@@ -16,9 +16,17 @@ set.seed(13)
 # A gambler is playing European Roulette. He's wagering on the dozen 13 to 24.
 #
 # Q. Calculate his probability of winning.
+12/37
 # Q. Find the probability that he wins 0, 1, 2, ... 10 times on 10 consecutive spins.
+y=dbinom(0:10,10,prob=12/37)
+
+data.frame(x=0:10,y=dbinom(0:10,10,prob=12/37)) %>% ggplot + geom_point(aes(x,y)) 
 # Q. What is the expected number of wins in 10 consecutive spins?
+10*12/37
+sum(0:10 * y) #weighted average expected value!!
 # Q. If he has won on 6 of those spins should we be concerned? What about if he has 7 wins?
+binom.test(6,10,12/37)
+binom.test(8,10,12/37)
 # Q. If he did not win on any of those spins should we offer him a bonus?
 
 # Let's take a different view on this problem. Use binom.test() to evaluate whether our observations are consistent
