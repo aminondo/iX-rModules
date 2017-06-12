@@ -33,7 +33,7 @@ stk$GOOGL = rename(stk$GOOGL, GOOGL = `Adj. Close`)
 stk$EBAY = rename(stk$EBAY, EBAY = `Adj. Close`)
 # 4. Merge these data into a single data frame. Assign this to variable stocks. Make sure that **all** data are
 #    included!
-tot_stk = merge(merge(stk[[1]],stk[[2]], all=T),stk[[3]])
+tot_stk = merge(merge(stk[[1]],stk[[2]], all=T),stk[[3]], all=T)
 # 5. Are these data tidy? Why?
 #  NOOO, cols 2-4 all represent price
 library(tidyr)

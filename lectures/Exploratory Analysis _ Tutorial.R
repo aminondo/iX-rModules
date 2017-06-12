@@ -19,11 +19,18 @@ head(starcat)
 # Q. Define a "nakedeye", categorical variable which indicates whether or not a star is visible to the naked eye. You
 #    might find https://en.wikipedia.org/wiki/Apparent_magnitude useful.
 
-# Q. Create an overview of the data using summary().
-# Q. By looking at the range for rrr (Declination) and resRA (Right Ascension) can we infer their meaning?
-# Q. Define a "hemisphere" categorical variable based on rrr.
-# Q. Find the star which is closest to the Celestial Equator.
+starcat = starcat %>% mutate(nakedeye = factor(ifelse(Vmag<=6.5,T,F)))
 
+# Q. Create an overview of the data using summary().
+#provides a sanity check, and checks for crazy outliers and understanding of contents of variables
+summary(starcat)
+# Q. By looking at the range for rrr (Declination) and resRA (Right Ascension) can we infer their meaning?
+# latitude(rrr) longitude(resRA) in hours
+# Q. Define a "hemisphere" categorical variable based on rrr.
+starcat = starcat %>% mutate(hemisphere = factor(ifelse(rrr<=0,"Southern","Northern")))
+summary(starcat)
+# Q. Find the star which is closest to the Celestial Equator.
+starcat %>% mutate(rrr_abs = abs(rrr)) %>% arrange(rrr_abs) %>% head(1)
 # Class Summary -------------------------------------------------------------------------------------------------------
 
 # Q. Find the number of stars in each hemisphere.
@@ -31,6 +38,7 @@ head(starcat)
 # Q. ... and naked eye visibility.
 
 # Q. Generate the above summary statistics using `dplyr`.
+group_by(starcat,hemisphere,nakedeye) %>% summarize(count = n(),avgVmg = mean(Vmag))
 
 # Tabulating ----------------------------------------------------------------------------------------------------------
 
