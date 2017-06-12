@@ -7,12 +7,39 @@
 # Exercise 1 ----------------------------------------------------------------------------------------------------------
 
 # 1. Use the Quandl package to grab the following data: WIKI/AAPL, WIKI/GOOGL and WIKI/EBAY.
+library(Quandl)
+library(dplyr)
+
+Quandl.api_key("gGxxNWEPU_JrHvx4Jsxz")
+fin = c("WIKI/AAPL","WIKI/GOOGL","WIKI/EBAY")
+ticker = c("AAPL", "GOOGL", "EBAY")
+stocks = lapply(fin, function(f){
+  Quandl(f)})
+
+
 # 2. Discard all columns except Date and "Adj. Close". You might need to use `Adj. Close` to index that column.
+stk =  lapply(stocks, function(s){
+  select(s,`Date`,`Adj. Close`)
+})
+
+#names(stk) = fin #rename indexes to tickers
 # 3. Rename the "Adj. Close" column using the ticker name.
+names(stk[[1]])[2] = "AAPL"
+names(stk[[2]])[2] = "GOOGL"
+names(stk[[3]])[2] = "EBAY"
+#OR
+stk$AAPL = rename(stk$AAPL, AAPL = `Adj. Close`)
+stk$GOOGL = rename(stk$GOOGL, GOOGL = `Adj. Close`)
+stk$EBAY = rename(stk$EBAY, EBAY = `Adj. Close`)
 # 4. Merge these data into a single data frame. Assign this to variable stocks. Make sure that **all** data are
 #    included!
+tot_stk = merge(merge(stk[[1]],stk[[2]], all=T),stk[[3]])
 # 5. Are these data tidy? Why?
+#  NOOO, cols 2-4 all represent price
+library(tidyr)
+tot_stk_tidy = gather(tot_stk, ticker, close_price, -Date )
 
+ggplot(tot_stk_tidy, aes(x = Date, y = close_price, color=ticker)) + geom_line()
 # Exercise 2 ----------------------------------------------------------------------------------------------------------
 
 # 1. Think about how you would calculate the average adjusted closing price of each stock broken down by year and month
