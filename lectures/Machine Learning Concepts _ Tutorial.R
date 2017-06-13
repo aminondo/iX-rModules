@@ -3,19 +3,67 @@
 # =====================================================================================================================
 
 # Grab data from lecture.
+load("~/Desktop/Data Science/iX-rModules/lectures/red-blue-points.RData")
+View(known)
+View(unknown)
 
+known$predict = sapply(1:nrow(known), function(point){
+  datum = known[point,]
+  print(datum)
+  r = sqrt(datum$x^2 + datum$y^2)
+  color = ifelse(abs(r)<1,"red","blue")
+})
+
+known$correct = known$colour == known$predict
+View(known)
+
+library(ggplot2)
+
+ggplot(known, aes(x,y, color=colour, shape = correct)) + geom_point()
+
+count = sum(known$correct)
+accuracy = count/nrow(known)
+accuracy
 # TRAIN/TEST SPLIT ----------------------------------------------------------------------------------------------------
 
-# Q. Split the data into train/test partitions.
 
+# Q. Split the data into train/test partitions.
+known$train = sample(c(T,F),300, prob=(c(.8,.2)), replace=TRUE)
+View(known)
+known$predict = NULL
+known$correct = NULL
 # CARTESIAN SOLUTION --------------------------------------------------------------------------------------------------
 
 # Q. Use a graphical approach to finding a threshold on x and y to differentiate between red/blue points.
 #    - You should only do this with the train partition, right?
+ggplot(subset(known,train)) + geom_histogram(aes(x=x, color = colour))
 # Q. Write a function which will use x and y coordinates to differentiate between red/blue points.
+train = subset(known,train)
+test = subset(known,train==F)
+train$predict = sapply(1:nrow(train), function(point){
+  datum = train[point,]
+  print(datum)
+  r = sqrt(datum$x^2 + datum$y^2)
+  color = ifelse(abs(r)<1,"red","blue")
+})
+
+test$predict = sapply(1:nrow(test), function(point){
+  datum = test[point,]
+  print(datum)
+  r = sqrt(datum$x^2 + datum$y^2)
+  color = ifelse(abs(r)<1,"red","blue")
+})
+View(train)
+accuracy = sum(train$colour==train$predict)/nrow(train)
+accuracy
+
+ggplot(subset(known,train)) + geom_histogram(aes(x=r, color = colour))
+
 # Q. Use this function to make predictions for the test partition.
 #    - Calculate accuracy.
 #    - Generate a confusion matrix.
+
+table(test$predict,test$colour)
 
 # ENGINEER FEATURES ---------------------------------------------------------------------------------------------------
 
