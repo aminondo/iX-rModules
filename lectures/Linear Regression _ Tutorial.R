@@ -39,6 +39,8 @@ growing <- data.frame(
 # EXERCISES:
 #
 # 1. Explain what's going on in the code above.
+ggplot(growing, aes(age,height, color=gender))+geom_point(size=2)
+
 # 2. Produce a scatter plot (use base graphics).
 
 # Fit Linear Regression Model -----------------------------------------------------------------------------------------
@@ -52,6 +54,8 @@ fit <- lm(height ~ age, growing)
 # EXERCISES:
 #
 # 1. Use abline() to superimpose your fit on the scatter plot.
+plot(height~age,data=growing)
+abline(fit, col='red', lty="dashed")
 
 # Let's interrogate the fit.
 #
@@ -65,10 +69,13 @@ summary(fit)
 
 # Make Predictions ----------------------------------------------------------------------------------------------------
 
-predict(fit)
+growing$predict = predict(fit)
+View(growing)
+ggplot(growing, aes(x=age)) +geom_point(aes(y=height), col="red")+geom_point(aes(y=predict), col="blue")
+
+
 #
 # These are the model values corresponding to each data point.
-
 # Generate predictions over a wider range of x.
 #
 growing.newdata <- data.frame(age = seq(-2, 25, 0.5))
@@ -76,7 +83,8 @@ growing.prediction <- predict(fit, newdata = growing.newdata)
 
 plot(height ~ age, growing, ylim = c(-30, 240), xlim = c(-2, 25))
 lines(seq(-2, 25, 0.5), growing.prediction, col = "red")
-#
+# difference between interpolating and extrapolating
+
 # Look critically at the model predictions.
 
 # Related terms:
@@ -110,11 +118,30 @@ lines(pi_upr ~ age, data = growing.uncertainty, lty = "dotted")
 # 1. Fit the following models to the data. Compare and discuss.
 #
 #     height ~ age
+fit = lm(height ~ age, growing)
+fit
+
 #     height ~ gender
+fit_2 = lm(height ~ gender, growing)
+fit_2
+
+growing %>% group_by(gender) %>% summarize(mean(height))
+
 #     height ~ age + gender
+fit_3 = lm(height ~ (age+gender), growing)
+fit_3
+
 #     height ~ age + age:gender
+fit_4 = lm(height ~ (age+age:gender), growing)
+fit_4
+
+
 #     height ~ age + gender + age:gender
+fit_5 = lm(height ~ (age+gender + age:gender), growing)
+fit_5
 #     height ~ age*gender
+fit_6 = lm(height ~ age*gender,growing)
+fit_6
 
 # LINEAR REGRESSION: PROSTATE CANCER DATA -----------------------------------------------------------------------------
 
