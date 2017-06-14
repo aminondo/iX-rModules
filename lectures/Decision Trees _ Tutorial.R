@@ -54,8 +54,9 @@ plot(fit)
 # 2. Estimate the survival probability for the following passengers:
 #
 #    a) a seven year old boy travelling in second class without any siblings;
+#   88%
 #    b) a lady travelling in second class with her husband and two sisters.
-
+#     95%
 # ---------------------------------------------------------------------------------------------------------------------
 # IRIS
 # ---------------------------------------------------------------------------------------------------------------------
@@ -65,6 +66,11 @@ head(iris)
 fit <- rpart(Species ~ ., data = iris)
 #
 fancyRpartPlot(fit)
+ggplot(iris, aes(x=Petal.Length,y=Petal.Width,color=Species)) +geom_point()
+
+fit = rpart(colour ~ ., data=known)
+fancyRpartPlot(fit)
+known$r = NULL
 
 # EXERCISES:
 #
