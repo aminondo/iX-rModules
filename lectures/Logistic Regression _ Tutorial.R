@@ -61,7 +61,9 @@ x <- seq(-10, 10, 0.1)
 #
 # Transform to probability.
 #
-y <- exp(x) / (1 + exp(x))
+a = 1
+b = -16
+y <- exp(a*x+b) / (1 + exp(a*x+b))
 #
 plot(x, y, type = "l", xlab = "Log odds", ylab = "Probability")
 abline(a = 0.5, b = 0, lty = "dashed")
@@ -111,8 +113,35 @@ summary(fit.default)
 # EXERCISES:
 #
 # 1. Do the extra features have an effect on the coefficient for student?
-# 2. How do we interpret the coefficients for balance and income?
 
+p = exp(-3.52856+.45264)/(1+exp(-3.52856+.45264))
+p
+
+# 2. How do we interpret the coefficients for balance and income?
+fit <- glm(default ~ (student+balance), data = default$train, family = binomial)
+summary(fit)
+
+#student == T
+#balance== 1000
+b = -.6225-10.78
+a = .00576
+
+p = exp(a*10+b)/(1+exp(a*10+b))
+p
+
+student = T
+x = -10.9751925 + student*-0.0871811 + 0.0058891*1000 + student*-0.0003268*1000
+p = exp(x)/(1+exp(x))
+p
+student = F
+x = -10.9751925 + student*-0.0871811 + 0.0058891*1000 + student*-0.0003268*1000
+p = exp(x)/(1+exp(x))
+p
+#predict
+default$test$prediction = predict(fit, newdata=default$test,type="response")
+head(default$test)
+default$test$class = ifelse(default$test$prediction<.50,"No","Yes")
+table(default$test$default,default$test$class)
 # PREDICT BY HAND -----------------------------------------------------------------------------------------------------
 
 # In practice we'd probably never make predictions like this, but it's useful to know how it works.
