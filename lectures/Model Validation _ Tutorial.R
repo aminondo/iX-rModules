@@ -4,26 +4,62 @@
 
 library(dplyr)
 library(caret)
+install.packages("caret")
+install.packages("ggplot2")
 library(vcdExtra)
 library(Metrics)
-
+library(ggplot2)
 # BOOTSTRAPPING INTUITION ---------------------------------------------------------------------------------------------
 
 set.seed(17)
 
 # Q. Simulate height data. Generate 1000 samples with mean 180 and standard deviation 10.
+height = rnorm(1000,180,10)
 # Q. Make a quick visualisation.
+hist(height)
 # Q. Calculate the sample mean and standard deviation.
+mean(height)
+sd(height)
 # Q. Estimate the standard deviation of the mean.
+
+
+
 # Q. Generate a bootstrap estimate of the standard deviation of the mean.
 #     - Generate a bootstrap sample from the data. Remember to sample with replacement.
 #     - Calculate the mean of the bootstrap sample.
 #     - Repeat to gather multiple bootstrap means.
 #     - Write a neat chunk of code to do this automatically.
-
+NBOOT=100
+height_pop = sapply(1:NBOOT, function(s){
+  sample(height,1000,replace=T)
+})
+mean_pop = apply(height_pop,2,mean)
+mean_pop
+sd_pop = sd(mean_pop)
 # BOOTSTRAP VALIDATION ------------------------------------------------------------------------------------------------
 
 # Q. Build a simple Decision Tree model using the rpart package to predict Species in the iris data.
+NBOOT=100
+iris_pop = sapply(1:NBOOT, function(s){
+  sample(iris,300,replace=T)
+})
+
+bootstrap_idx = sample(1:nrow(iris), nrow(iris), replace=T)
+train = iris[bootstrap_idx,]
+test = iris[-bootstrap_idx,]
+train_fit = rpart(Species ~ ., data=train)
+pred_fit = predict(train_fit, newdata=test, type="class")
+mean(pred_fit == test$Species)
+
+accuracy = sapply(1:100, function(x){
+  bootstrap_idx = sample(1:nrow(iris), nrow(iris), replace=T)
+  train = iris[bootstrap_idx,]
+  test = iris[-bootstrap_idx,]
+  train_fit = rpart(Species ~ ., data=train)
+  pred_fit = predict(train_fit, newdata=test, type="class")
+  mean(pred_fit == test$Species)
+})
+hist(accuracy)
 # Q. How can we assess the accuracy of this model? (Don't do it, just think about it.)
 # Q. Generate a bootstrap estimate of the model accuracy.
 #     - Generate a bootstrap sample from the iris data.
@@ -41,6 +77,29 @@ set.seed(17)
 #     - Repeat for n = 2 through n = 10.
 #     - Calculate the mean and standard deviation of the accuracy estimates.
 
+iris_cv = iris %>% mutate(
+                      k = sample(1:10,nrow(.),replace=T))
+iris_cv
+View(iris_cv)
+library(rpart)
+library(rattle)
+
+models = lapply(1:10, function(n){
+  fit <- rpart(Species ~ ., data =filter(iris_cv, k!=n))
+})
+#fit <- rpart(k ~ ., data = iris_cv)
+models
+#fancyRpartPlot(models[[2]])
+
+#n=1
+#predict(models[[n]], filter(iris_cv, k==n), type="class")
+meanCV =sapply(1:10, function(n){
+  fold_pred = predict(models[[n]], filter(iris_cv, k==n), type="class")
+  fold_ref = filter(iris_cv,k==n)$Species
+  mean(fold_pred == fold_ref)
+})
+mean(meanCV)
+sd(meanCV)
 # REGRESSION: CARS ----------------------------------------------------------------------------------------------------
 
 # We're going to model the stopping distance as a function of speed.
