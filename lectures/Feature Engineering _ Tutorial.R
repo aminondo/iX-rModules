@@ -10,15 +10,51 @@
 # b) Create a Decision Tree to classify points as red or blue.
 # c) What is the accuracy of the model? Explain the performance. Draw out the decision regions.
 # d) Create one or more new features which will improve the model.
-
+library(dplyr)
+library(ggplot2)
+library(rpart)
+library(rattle)
+library(caret)
+data = data.frame(x=runif(500,0,1),y=runif(500,0,1))
+data
+data = mutate(data,color = factor(ifelse(y<1-x,"Red","Blue"),levels=c("Red","Blue")))
+ggplot(data, aes(x,y,color=color))+geom_point()
+fit = rpart(color ~ .,data)
+printcp(fit)
+train(color ~ ., data, method = "rpart", trControl = trainControl(method = "cv",
+                                                                           verboseIter = TRUE,
+                                                                           number = 10))
+fancyRpartPlot(fit)
+#pred_fit = predict(fit)
+#pred_fit
+new_data = data %>% mutate(sep = y+x-1)
+new_data
+nfit = rpart(color ~ ., new_data)
+fancyRpartPlot(nfit)
 # SAUSAGE -------------------------------------------------------------------------------------------------------------
-
+install.packages("SemiPar")
+library(SemiPar)
+data(sausage)
+head(sausage)
+tail(sausage)
 # a) Generate a Decision Tree model to predict sausage type using the sausage data from the SemiPar package.
+train(type ~ .,sausage,method="rpart", trControl=trainControl(method="cv",
+                                                verboseIter=T,
+                                                number=10))
 # b) Assess the accuracy of the model.
+#   45.8 %
 # c) Add one or more new features to the data.
-# d) Build a new model. Is the performance of the new model an improvement?
-# e) Plot out the resulting Decision Tree and interpret. What do you learn about sausages.
+ggplot(sausage, aes(sodium,calories,color=type))+geom_point()
+nsausage = sausage %>% mutate(ratio = calories/sodium) 
 
+train(type ~ .,nsausage,method="rpart", trControl=trainControl(method="cv",
+                                                              verboseIter=T,
+                                                              number=10))
+# d) Build a new model. Is the performance of the new model an improvement?
+# added ratio accuracy imprived to 61.5%
+# e) Plot out the resulting Decision Tree and interpret. What do you learn about sausages.
+fit = rpart(type ~ ., nsausage, cp=.02941176)
+fancyRpartPlot(fit)
 # ABALONE -------------------------------------------------------------------------------------------------------------
 
 # Construct a model to predict Abalone age.
