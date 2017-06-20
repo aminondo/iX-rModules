@@ -1,57 +1,53 @@
 # To expose the API below do the following in the console:
 #
-# > library(plumber)
-# > r <- plumb("___________________") # Insert correct file name here!
+#setwd("API")
+#library(plumber)
+#r <- plumb("api_tutorial.R") 
 # > r$run(port = 8000)
 
-# ---------------------------------------------------------------------------------------------------------------------
-
-#* @get /date
-function(){
-  Sys.Date()
-}
-
-#* @post /echo
-function(stuff){
-  stuff
-}
+# GLOBAL ---------------------------------------------------------------------------------------------------------------------
+library(rpart)
+library(rattle)
+library(vcdExtra)
+fit = rpart(Species ~ Petal.Length + Petal.Width, data=iris)
 
 # GET -----------------------------------------------------------------------------------------------------------------
 
-# GET interface:
-#
-# - http://localhost:8000/greeting
-# - http://localhost:8000/random
-# - http://localhost:8000/random?mean=10&samples=20
-
-#* @get /greeting
-function() {
-  "Hello there! Welcome to my API."
+#* @get /predict
+#* @param pl = petal length
+#* @param pw = petal width
+function(pl = 0,pw=0){
+  newdata = data.frame(
+    Petal.Length = as.numeric(pl),
+    Petal.Width = as.numeric(pw)
+  )
+  predict(fit, newdata, type = "class")
+  
 }
 
-#* @get /time
-function(tz = "") {
-  strftime(Sys.time(), format = "%x %X %Z", tz = tz)
+
+#* @serializer contentType list(type="application/pdf")
+#* @get /tree
+function(){
+  plotfile <- tempfile()
+  pdf(plotfile)
+  fancyRpartPlot(fit)
+  dev.off()
+  
+  readBin(plotfile, "raw", n = file.info(plotfile)$size)
 }
 
-#* @get /system
-function() {
-  paste(Sys.info()[c("sysname", "version")], collapse = " ")
-}
+#* @serializer contentType list(type="application/pdf")
+#* @get /titanic
 
-# A list() response is serialised into a JSON document.
-#
-#* @get /random
-function(samples = 10, mean = 0, sd = 1) {
-  # All GET parameters are submitted as strings, so change to appropriate types.
-  #
-  samples = as.integer(samples)
-  mean = as.numeric(mean)
-  sd = as.numeric(sd)
-  #
-  random = rnorm(samples, mean, sd)
-  #
-  list(samples = random, mean = mean(random), median = median(random))
+function(cp=.5){
+  local.fit = rpart(survived ~ ., data=Titanicp, control=rpart.control(as.numeric(cp)))
+  plotfile <- tempfile()
+  pdf(plotfile)
+  fancyRpartPlot(local.fit)
+  dev.off()
+  
+  readBin(plotfile, "raw", n = file.info(plotfile)$size)
 }
 
 # POST ----------------------------------------------------------------------------------------------------------------
